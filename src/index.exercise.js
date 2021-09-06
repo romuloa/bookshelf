@@ -1,9 +1,70 @@
-// 🐨 you'll need to import React and ReactDOM up here
+import React, { useState } from 'react';
+import ReactDOM from 'react-dom'
+import {Logo} from './components/logo';
+import { Dialog } from '@reach/dialog';
+import '@reach/dialog/styles.css';
 
-// 🐨 you'll also need to import the Logo component from './components/logo'
 
-// 🐨 create an App component here and render the logo, the title ("Bookshelf"), a login button, and a register button.
-// 🐨 for fun, you can add event handlers for both buttons to alert that the button was clicked
+const LoginForm = ({onSubmit, buttonText}) => {
 
-// 🐨 use ReactDOM to render the <App /> to the root element
-// 💰 find the root element with: document.getElementById('root')
+  function handleSubmit(e) {
+    
+    e.preventDefault();
+    const {username, password} = e.target.elements;
+
+    onSubmit({
+      username: username.value,
+      password: password.value
+    })
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <label htmlFor="username">Username</label>
+      <input id="username" type="text" />
+
+      <label htmlFor="password">Password</label>
+      <input id="password" type="text"/>
+      <button type="submit">{buttonText}</button>
+    </form>
+    
+  )
+}
+
+
+function App() {
+
+  const [openModal, setOpenModal] = useState('none');
+  const close = () => setOpenModal('none');
+
+  function login(formData) {
+    console.log('login', formData);
+  }
+
+  function register(formData) {
+    console.log('register', formData);
+  }
+
+  return (
+    <>
+      <Logo/>
+      <h1>BookShelf</h1>
+      <button onClick={() => setOpenModal('login')}>Login</button> 
+      <button onClick={() => setOpenModal('register')}>Register</button>
+
+      <Dialog isOpen={openModal === 'login'}>
+        <h3>Login</h3>
+        <LoginForm onSubmit={login} buttonText="Login"/>
+        <button onClick={close}>Close</button>
+      </Dialog>
+
+      <Dialog isOpen={openModal === 'register'}>
+        <h3>Register</h3>
+        <LoginForm onSubmit={register} buttonText="Login"/>
+        <button onClick={close}>Close</button>
+      </Dialog>
+    </>
+  )
+}
+
+ReactDOM.render(<App/>, document.getElementById('root'));
